@@ -1,0 +1,10 @@
+{
+    "organization": {
+        "id": "1",
+        "name": "Amazon Web Services",
+        "domain": "aws.amazon.com",
+        "url": "https://servicetrust.microsoft.com/"
+    },
+    "keywords": ["SOC 3", "IS0 27001"]
+}
+

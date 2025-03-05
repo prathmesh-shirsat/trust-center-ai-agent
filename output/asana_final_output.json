@@ -1,0 +1,27 @@
+{
+    "status": "success",
+    "organization": {
+        "id": "1",
+        "name": "Asana",
+        "domain": "asana.com",
+        "trust_center_url": "https://asana.com/security"
+    },
+    "documents": {
+        "public": [
+            {
+                "id": "uuid",
+                "title": "ISO 27001",
+                "type": "COMPLIANCE",
+                "url": "https://security.asana.com/?itemUid=1fed9faa-4a87-427c-9a95-96b4d6bf66b7&source=click"
+            }
+        ],
+        "private": [
+            {
+                "id": "uuid",
+                "title": "SOC 2",
+                "type": "SOC 2",
+                "url": "https://security.asana.com/?itemUid=7bfa66da-33ab-49de-8391-e329738a1ae9&source=click"
+            }
+        ]
+    }
+}

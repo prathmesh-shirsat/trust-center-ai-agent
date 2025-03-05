@@ -1,0 +1,26 @@
+{
+    "status": "success",
+    "organization": {
+        "id": "1",
+        "name": "Amazon Web Services",
+        "domain": "aws.amazon.com",
+        "trust_center_url": "https://servicetrust.microsoft.com/"
+    },
+    "documents": {
+        "public": [
+            {
+                "id": "6f39cdd7-a57b-45f6-a459-151d115ee885",
+                "title": "Microsoft 365 - Central Services - SOC 3 Report (9-30-2024)",
+                "type": "SOC 3",
+                "url": "https://servicetrust.microsoft.com/DocumentPage/6f39cdd7-a57b-45f6-a459-151d115ee885"
+            },
+            {
+                "id": "uuid",
+                "title": "Microsoft 365 - ISO 27001:2022 Certificate (2024-2027)",
+                "type": "ISO 27001",
+                "url": "https://servicetrust.microsoft.com/DocumentPage/1b559054-f6dc-4323-9216-06f027c2c53d"
+            }
+        ],
+        "private": []
+    }
+}

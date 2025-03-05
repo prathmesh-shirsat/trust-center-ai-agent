@@ -1,0 +1,6 @@
+python-dotenv
+langchain
+openai
+browser-use
+asyncio
+playwright
