@@ -30,14 +30,6 @@ This project requires **Python 3.11 or higher**. If you do not have it installed
    ```bash
    python3 --version
    ```
-1. Install Python via Homebrew:
-   ```bash
-   brew install python@3.11
-   ```
-2. Verify installation:
-   ```bash
-   python3 --version
-   ```
 
 
 ### 1. Clone the repository
