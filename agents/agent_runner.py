@@ -1,97 +1,59 @@
-import json
 import asyncio
+import logging
 from browser_use import Agent, Browser
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class AgentRunner:
     def __init__(self, task, llm):
         """
-        Initializes agents with separate browser instances for each keyword.
-        :param task: Input JSON defining the organization and keywords.
+        Initializes a single agent for the given task.
+        :param task: Task in string format.
         :param llm: LLM model instance.
         """
         self.llm = llm
         self.task = task
-        self.agents = self.create_agents()
+        self.agent = None
 
-    def create_agents(self):
-        """Creates an agent for each keyword with a unique browser instance."""
-        from utils.constants import EXTEND_SYSTEM_MESSAGE
+    def create_agent(self):
+        """Creates a single agent instance."""
+        self.agent = Agent(
+            task=self.task,
+            llm=self.llm,
+            browser=Browser(),
+            max_actions_per_step=5
+        )
+        logger.info("Created agent.")
 
-        organization_info = self.task["organization"]
-        agents = []
+    async def run(self):
+        """Runs the agent asynchronously and returns extracted document data."""
+        if not self.agent:
+            logger.error("Agent is not initialized. Call create_agent first.")
+            return {"status": "error", "message": "Agent not initialized"}
         
-        for keyword in self.task["keywords"]:
-            agent_task = {
-                "organization": organization_info,
-                "documentName": keyword
-            }
-            
-            agent = Agent(
-                task=json.dumps(agent_task) + "\n" + EXTEND_SYSTEM_MESSAGE,
-                llm=self.llm,
-                browser=Browser(),
-                max_actions_per_step=5,
-                initial_actions=[
-                    {'open_tab': {'url': organization_info["url"]}},
-                ]
-            )
-            agents.append((keyword, agent))
-
-        return agents
-
-    async def run_agent(self, keyword, agent):
-        """
-        Runs an agent asynchronously and returns extracted document data.
-        Agents are already instructed to return results in the required format.
-        """
+        logger.info("Running agent...")
         try:
-            result = await agent.run()
+            result = await self.agent.run()
+            logger.info("Agent execution completed.")
             return result.final_result()
         except Exception as e:
-            return {"status": "error", "keyword": keyword, "message": str(e)}
+            logger.error(f"Error running agent: {e}")
+            return {"status": "error", "message": str(e)}
+    
+    async def stop_agent(self):
+        """Stops the agent and closes the browser if it exists."""
+        if self.agent:
+            self.agent.stop() 
+            if self.agent.browser:
+                await self.agent.browser.close()  
+            self.agent = None
 
-    async def run_all_agents(self):
-        """Runs all agents concurrently and consolidates document results."""
-        tasks = [self.run_agent(keyword, agent) for keyword, agent in self.agents]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
 
-        # Convert JSON strings to dictionaries if needed
-        parsed_results = []
-        for result in results:
-            if isinstance(result, str):  # If result is a JSON string, parse it
-                try:
-                    parsed_results.append(json.loads(result))
-                except json.JSONDecodeError:
-                    print(f"Failed to parse JSON: {result}")
-            elif isinstance(result, dict):
-                parsed_results.append(result)
-
-        print(f"Parsed Results: {parsed_results}")
-
-        # Aggregate public and private documents
-        public_docs = []
-        private_docs = []
-
-        for result in parsed_results:
-            if result.get("status") == "success":
-                public_docs.extend(result.get("documents", {}).get("public", []))
-                private_docs.extend(result.get("documents", {}).get("private", []))
-            elif result.get("status") == "error":
-                print(f"Error processing keyword: {result.get('message')}")
-
-        # Final consolidated response
-        consolidated_response = {
-            "status": "success" if public_docs or private_docs else "error",
-            "organization": {
-                "id": self.task["organization"].get("id", ""),
-                "name": self.task["organization"]["name"],
-                "domain": self.task["organization"]["domain"],
-                "trust_center_url": self.task["organization"]["url"]
-            },
-            "documents": {
-                "public": public_docs,
-                "private": private_docs
-            }
-        }
-
-        return consolidated_response
+    async def stop_agent_after_timeout(self, timeout):
+        """Stops the agent after a given timeout."""
+        await asyncio.sleep(timeout)
+        await self.stop_agent()
+        logger.info(f"Agent stopped after {timeout} seconds.")

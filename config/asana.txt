@@ -1,0 +1,44 @@
+Final result output format should be as follows : 
+{
+    "status": "success",
+    "organization": {
+        "id": "uuid",
+        "name": "Organization name",
+        "domain": "url",
+        "trust_center_url": "url"
+    },
+    "documents": {
+        "public": [
+            {
+                "id": "uuid",
+                "title": "Document Name",
+                "type": "SOC 2",
+                "url": "donwload url"
+            }
+        ],
+        "private": [
+            {
+                "id": "uuid",
+                "title": "Document Name",
+                "type": "HIPAA",
+                "url": "download url"
+            }
+        ]
+    }
+}
+
+Goal : 
+Extract key compliance document of type SOC 2, HIPAA from Trust Center with URL : https://security.asana.com/
+
+Rules/Instructions: 
+1. If you encounter Cloudflare verification, close the tab and continue with the next task.
+2. If a bulk download option exists (checkbox selection), you find the URLs here as well
+3. Find individual documents matching the keyword, get their download link.
+4. If login/authentication is required/ it requires any kind of input like email,add the link to private documents and abort the agent and 
+5. Get download links for both public and private files but never download the files.
+6. Scroll inside modals if necessary.
+7. If an element matching the keyword is found, hover over it to enable the download button.
+8. If you encounter a link with stopWord from input json task, don't explore it and go back.
+9. Find only 1 agent per document type and abort the agent after that.
+10. If you are stuck at a particular action and have retried for 3 times, go back using the cross button.
+
